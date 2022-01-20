@@ -25,13 +25,14 @@ const AddTaskArea = ({task, deadline, setTask, setDeadline, addTask}:IProps) => 
     //   align-items: center;
     // }
     return (        
-    <Box className="inputContainer">
+    <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
         <TextField label="Task..." variant="outlined" name="task" value={task} onChange={handleChange}></TextField>
         <TextField label="Deadline (in Days)..." variant="outlined" value={deadline} name="deadline" onChange={handleChange}></TextField>
         {/* <input type="text" placeholder="Task..." name="task" value={task} onChange={handleChange}></input> */}
         {/* <input type="number" placeholder="Deadline (in Days)..." value={deadline} name="deadline" onChange={handleChange}></input> */}
         <Button variant="contained" onClick={addTask}>Add Task</Button>
         {/* <button onClick={addTask}>Add Task</button> */}
+        
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { Box, IconButton, ListItem, ListItemText } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, {FC, ChangeEvent, useState} from 'react';
@@ -12,7 +12,7 @@ interface IProps {
 const TodoTask = ({task, completeTask}: IProps) => {
 
     return (
-    <div className="TodoTask">
+    <Box display="flex" justifyContent="center">
         <ListItem className="task"
             key={task.taskId}
             disableGutters
@@ -25,7 +25,7 @@ const TodoTask = ({task, completeTask}: IProps) => {
         >
             <ListItemText primary={`${task.taskName} ${task.deadLine}`} />
         </ListItem>
-    </div>
+    </Box>
     );
 }
 

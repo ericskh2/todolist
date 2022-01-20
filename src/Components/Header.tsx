@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 const header = () => {
-    return (<Box>
+    return (<Box display="flex" justifyContent="center">
         header
     </Box>);
 }

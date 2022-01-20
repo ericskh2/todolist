@@ -14,7 +14,7 @@ import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/fires
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 import firebaseConfig from './firebaseConfig'
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import Header from './Components/Header';
 
 // Initialize Firebase
@@ -99,19 +99,21 @@ const App: FC = () => {
   }
 
   return (
-    <Box className="App">
+    <Grid container spacing={2}  text-align="center" alignItems="center"
+    justifyContent="center"
+    >
       {/*value*/}
-      <Box>
+      <Grid item xs={12}>
         <Header/>
-      </Box>
-      <Box>
+      </Grid>
+      <Grid item xs={12}>
         <AddTaskArea task={task} deadline={deadline} setTask={setTask} setDeadline={setDeadline} addTask={addTask}/>
-      </Box>
-      <Box className="todoList">
+      </Grid>
+      <Grid item xs={12}>
         <TaskList todoList={todoList} completeTask={completeTask}/>
         {/* {todoList.map((task: ITask, key: number) => {return <TodoTask key={key} task={task} completeTask={completeTask}/>})}   */}
-      </Box>      
-    </Box>
+      </Grid>      
+    </Grid>
   );
 }
 
