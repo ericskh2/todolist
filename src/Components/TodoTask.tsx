@@ -2,7 +2,7 @@ import { Box, IconButton, ListItem, ListItemText } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React, {FC, ChangeEvent, useState} from 'react';
-import { ITask } from '../Interfaces';
+import { ITask } from '../ITask';
 
 interface IProps {
     task: ITask;
