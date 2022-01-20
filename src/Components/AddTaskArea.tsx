@@ -1,22 +1,21 @@
 import { Box, Button, TextField } from "@mui/material";
 import { ChangeEvent } from "react";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 
 interface IProps {
     task: string;
-    deadline: number;
+    deadline: Date;
     setTask: (val:string)=>void;
-    setDeadline: (val:number)=>void;
+    setDeadline: (val:Date)=>void;
     addTask: ()=>void;
 }
 
 const AddTaskArea = ({task, deadline, setTask, setDeadline, addTask}:IProps) => {
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        if(event.target.name === "task") {
-          setTask(event.target.value);
-        } else {
-          setDeadline(Number(event.target.value));
-        }
+      setTask(event.target.value);
     }
 
     // .inputContainer {
@@ -24,13 +23,24 @@ const AddTaskArea = ({task, deadline, setTask, setDeadline, addTask}:IProps) => 
     //   flex-direction: column;
     //   align-items: center;
     // }
+    
     return (        
     <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
-        <TextField label="Task..." variant="outlined" name="task" value={task} onChange={handleChange}></TextField>
-        <TextField label="Deadline (in Days)..." variant="outlined" value={deadline} name="deadline" onChange={handleChange}></TextField>
-        {/* <input type="text" placeholder="Task..." name="task" value={task} onChange={handleChange}></input> */}
-        {/* <input type="number" placeholder="Deadline (in Days)..." value={deadline} name="deadline" onChange={handleChange}></input> */}
-        <Button variant="contained" onClick={addTask}>Add Task</Button>
+        <TextField label="Task..." variant="outlined" name="task" value={task} onChange={handleChange} sx={{margin:2}}></TextField>
+        {/* <TextField label="Deadline (in Days)..." variant="outlined" value={deadline} name="deadline" onChange={handleChange}></TextField> */}
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DateTimePicker
+        renderInput={(props) => <TextField {...props} />}
+        label="DateTimePicker"
+        value={deadline}
+        onChange={(newDeadline) => {
+          if(newDeadline!=null) setDeadline(newDeadline);
+        }}
+      />
+    </LocalizationProvider>
+
+        <Button variant="contained" onClick={addTask} sx={{margin:2}}>Add Task</Button>
         {/* <button onClick={addTask}>Add Task</button> */}
         
     </Box>

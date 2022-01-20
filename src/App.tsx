@@ -1,13 +1,13 @@
 import React, {FC, ChangeEvent, useState, useEffect} from 'react';
 import './App.css';
-import {ITask} from './Interfaces'
+import {ITask} from './ITask'
 import AddTaskArea from './Components/AddTaskArea';
 import TaskList from './Components/TaskList';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {deleteDoc, getFirestore} from '@firebase/firestore';
+import {deleteDoc, getFirestore, Timestamp} from '@firebase/firestore';
 import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -60,15 +60,16 @@ const db = getFirestore(app);
 
 const user:string = "testuser";
 
-const collectionRef = collection(db, "todolists", user, "tasks");
+const collectionRef = collection(db, "todolists_datetime", user, "tasks");
 
 const App: FC = () => {
   
   const [task, setTask] = useState<string>("");
-  const [deadline, setDeadline] = useState<number>(0);
+  const [deadline, setDeadline] = useState<Date>(new Date());
+  // const [deadline, setDeadline] = useState<number>(0);
   const [todoList, setTodoList] = useState<ITask[]>([]);
 
-  const updateTodoList = async() => {
+  const fetchTodoList = async() => {
     const querySnapshot = await getDocs(collectionRef);
   
     const cache: ITask[] = [];
@@ -76,26 +77,31 @@ const App: FC = () => {
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       // console.log(doc.id, " => ", doc.data());
-      cache.push({taskName:doc.data().name, deadLine: doc.data().deadline, taskId: doc.id});
+      cache.push({taskName:doc.data().name, deadLine: doc.data().deadline.toDate(), taskId: doc.id});
     });
   
     setTodoList(cache);
   }
 
-  useEffect(()=>{updateTodoList();},[]);
+  useEffect(()=>{fetchTodoList();},[]);
 
   const addTask = async () => {
-    await addDoc(collectionRef, {
-    name: task, deadline: deadline});
-    updateTodoList();
+    if(task==="") {
+      await addDoc(collectionRef, {
+        name: "Untitled Task", deadline: deadline});
+    } else {
+      await addDoc(collectionRef, {
+        name: task, deadline: deadline});
+    }
+    fetchTodoList();
     setTask("");
-    setDeadline(0);
+    setDeadline(new Date());
   }
 
   const completeTask = async (key: string) => {
+    setTodoList(todoList.filter((task)=>{return task.taskId!=key}));
     await deleteDoc(doc(collectionRef,key));
-    // setTodoList(todoList.filter((task, index)=>{return index!=key}));
-    updateTodoList();
+    //fetchTodoList();
   }
 
   return (
