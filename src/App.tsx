@@ -7,20 +7,39 @@ import TaskList from './Components/TaskList';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import {deleteDoc, getFirestore, Timestamp} from '@firebase/firestore';
+import {CollectionReference, deleteDoc, DocumentData, getFirestore, Timestamp} from '@firebase/firestore';
 import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 import firebaseConfig from './firebaseConfig'
+
 import { Box, Grid } from '@mui/material';
 import Header from './Components/Header';
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig); 
+const app = firebase.initializeApp(firebaseConfig); // add firebase in front of the function call
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+
+// Firebaseui
+const uiConfig = {
+  // Popup signin flow rather than redirect flow.
+  signInFlow: 'popup',
+  // We will display Google and Facebook as auth providers.
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  ],
+  callbacks: {
+    // Avoid redirects after sign-in.
+    signInSuccessWithAuthResult: () => false,
+  },
+};
 
 // const citiesRef = collection(db, "cities");
 
@@ -58,20 +77,38 @@ const db = getFirestore(app);
 //   }  
 // }
 
-const user:string = "testuser";
-
-const collectionRef = collection(db, "todolists_datetime", user, "tasks");
-
 const App: FC = () => {
   
   const [task, setTask] = useState<string>("");
   const [deadline, setDeadline] = useState<Date>(new Date());
   // const [deadline, setDeadline] = useState<number>(0);
   const [todoList, setTodoList] = useState<ITask[]>([]);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false); // Local signed-in state.
+  const [collectionRef, setCollectionRef] = useState<CollectionReference<DocumentData>>(collection(db, "todolists_datetime", "testuser", "tasks"));
+  // Listen to the Firebase Auth state and set the local state.
+
+  // Listen to the Firebase Auth state and set the local state.
+  useEffect(() => {
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
+      setIsSignedIn(!!user);
+    });
+    return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
+  }, []);
+
+  useEffect(()=>{
+    if(isSignedIn) {
+      setCollectionRef(collection(db, "todolists_datetime", firebase.auth().currentUser!.uid,"tasks"));
+    } else {
+      setCollectionRef(collection(db, "todolists_datetime", "testuser","tasks"));
+    }
+  },[isSignedIn]);
+
+  useEffect(()=>{fetchTodoList();},[collectionRef]);
 
   const fetchTodoList = async() => {
+
+    console.log(collectionRef)
     const querySnapshot = await getDocs(collectionRef);
-  
     const cache: ITask[] = [];
   
     querySnapshot.forEach((doc) => {
@@ -81,9 +118,8 @@ const App: FC = () => {
     });
   
     setTodoList(cache);
-  }
 
-  useEffect(()=>{fetchTodoList();},[]);
+  }
 
   const addTask = async () => {
     if(task==="") {
@@ -104,23 +140,34 @@ const App: FC = () => {
     //fetchTodoList();
   }
 
-  return (
-    <Grid container spacing={2}  text-align="center" alignItems="center"
-    justifyContent="center"
-    >
-      {/*value*/}
-      <Grid item xs={12}>
-        <Header/>
+  if(!isSignedIn) {
+    return (
+      <div>
+        <h1>TodoList</h1>
+        <p>Please sign-in:</p>
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      </div>
+    );
+  } else {
+    return (
+      <Grid container spacing={2}  text-align="center" alignItems="center"
+      justifyContent="center"
+      >
+        {/*value*/}
+        <Grid item xs={12}>
+          <Header/>
+        </Grid>
+        <Grid item xs={12}>
+          <AddTaskArea task={task} deadline={deadline} setTask={setTask} setDeadline={setDeadline} addTask={addTask}/>
+        </Grid>
+        <Grid item xs={12}>
+          <TaskList todoList={todoList} completeTask={completeTask}/>
+          {/* {todoList.map((task: ITask, key: number) => {return <TodoTask key={key} task={task} completeTask={completeTask}/>})}   */}
+        </Grid>      
       </Grid>
-      <Grid item xs={12}>
-        <AddTaskArea task={task} deadline={deadline} setTask={setTask} setDeadline={setDeadline} addTask={addTask}/>
-      </Grid>
-      <Grid item xs={12}>
-        <TaskList todoList={todoList} completeTask={completeTask}/>
-        {/* {todoList.map((task: ITask, key: number) => {return <TodoTask key={key} task={task} completeTask={completeTask}/>})}   */}
-      </Grid>      
-    </Grid>
-  );
+    );
+  }
+
 }
 
 export default App;
