@@ -5,16 +5,6 @@
   text-align: center;
 }
 
-.header {
-  margin-top: 50px;
-}
-
-.inputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 button {
   width: 80%;
 }
@@ -24,6 +14,7 @@ button {
   flex: 7;
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 50%;
 }
 
@@ -31,6 +22,7 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   height: 100px;
 }
 
@@ -53,3 +45,4 @@ button {
 .complete {
   width: 20%;
 }
+

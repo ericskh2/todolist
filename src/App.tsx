@@ -14,6 +14,8 @@ import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/fires
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 import firebaseConfig from './firebaseConfig'
+import { Box } from '@mui/material';
+import Header from './Components/Header';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -97,16 +99,19 @@ const App: FC = () => {
   }
 
   return (
-    <div className="App">
+    <Box className="App">
       {/*value*/}
-      <div className="header">
+      <Box>
+        <Header/>
+      </Box>
+      <Box>
         <AddTaskArea task={task} deadline={deadline} setTask={setTask} setDeadline={setDeadline} addTask={addTask}/>
-      </div>
-      <div className="todoList">
+      </Box>
+      <Box className="todoList">
         <TaskList todoList={todoList} completeTask={completeTask}/>
         {/* {todoList.map((task: ITask, key: number) => {return <TodoTask key={key} task={task} completeTask={completeTask}/>})}   */}
-      </div>      
-    </div>
+      </Box>      
+    </Box>
   );
 }
 

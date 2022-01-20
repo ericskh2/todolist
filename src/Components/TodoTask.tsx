@@ -13,7 +13,7 @@ const TodoTask = ({task, completeTask}: IProps) => {
 
     return (
     <div className="TodoTask">
-        <ListItem
+        <ListItem className="task"
             key={task.taskId}
             disableGutters
             value={task.taskId}
