@@ -69,7 +69,7 @@ const App: FC = () => {
   // const [deadline, setDeadline] = useState<number>(0);
   const [todoList, setTodoList] = useState<ITask[]>([]);
 
-  const updateTodoList = async() => {
+  const fetchTodoList = async() => {
     const querySnapshot = await getDocs(collectionRef);
   
     const cache: ITask[] = [];
@@ -83,21 +83,25 @@ const App: FC = () => {
     setTodoList(cache);
   }
 
-  useEffect(()=>{updateTodoList();},[]);
+  useEffect(()=>{fetchTodoList();},[]);
 
   const addTask = async () => {
-    
-    await addDoc(collectionRef, {
-    name: task, deadline: deadline});
-    updateTodoList();
+    if(task==="") {
+      await addDoc(collectionRef, {
+        name: "Untitled Task", deadline: deadline});
+    } else {
+      await addDoc(collectionRef, {
+        name: task, deadline: deadline});
+    }
+    fetchTodoList();
     setTask("");
     setDeadline(new Date());
   }
 
   const completeTask = async (key: string) => {
+    setTodoList(todoList.filter((task)=>{return task.taskId!=key}));
     await deleteDoc(doc(collectionRef,key));
-    // setTodoList(todoList.filter((task, index)=>{return index!=key}));
-    updateTodoList();
+    //fetchTodoList();
   }
 
   return (

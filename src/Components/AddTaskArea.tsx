@@ -26,7 +26,7 @@ const AddTaskArea = ({task, deadline, setTask, setDeadline, addTask}:IProps) => 
     
     return (        
     <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
-        <TextField label="Task..." variant="outlined" name="task" value={task} onChange={handleChange}></TextField>
+        <TextField label="Task..." variant="outlined" name="task" value={task} onChange={handleChange} sx={{margin:2}}></TextField>
         {/* <TextField label="Deadline (in Days)..." variant="outlined" value={deadline} name="deadline" onChange={handleChange}></TextField> */}
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -40,7 +40,7 @@ const AddTaskArea = ({task, deadline, setTask, setDeadline, addTask}:IProps) => 
       />
     </LocalizationProvider>
 
-        <Button variant="contained" onClick={addTask}>Add Task</Button>
+        <Button variant="contained" onClick={addTask} sx={{margin:2}}>Add Task</Button>
         {/* <button onClick={addTask}>Add Task</button> */}
         
     </Box>

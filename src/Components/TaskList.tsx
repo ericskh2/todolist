@@ -25,9 +25,10 @@ const TaskList = ({todoList, completeTask}:IProps) => {
     return (
         <Box display="flex" justifyContent="center">
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+
         {todoList.map((task,key) =>{
             return (
-            <TodoTask task={task} completeTask={completeTask}/>
+            <TodoTask task={task} completeTask={completeTask} canRemove={true}/>
             )})}
         </List>
         </Box>
