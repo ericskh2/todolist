@@ -142,11 +142,11 @@ const App: FC = () => {
 
   if(!isSignedIn) {
     return (
-      <div>
-        <h1>TodoList</h1>
-        <p>Please sign-in:</p>
-        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-      </div>
+      <Grid container spacing={2} textAlign="center">
+        <Grid item xs={12}><h1>TodoList</h1></Grid>
+        <Grid item xs={12}><p>Please sign-in:</p></Grid>
+        <Grid item xs={12}><StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /></Grid>
+      </Grid>
     );
   } else {
     return (
